@@ -15,7 +15,7 @@ public class StatePanel extends JPanel {
 	
 	public StatePanel() {
 		super();
-		setSize(MainFrame.GAME_SIDE_LENGTH, 10);
+		setSize(MainFrame.GAME_SIDE_LENGTH_X, 10);
 		add(new JButton("a"));
 	}
 }

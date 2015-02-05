@@ -2,11 +2,10 @@ import java.awt.Event;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 
-
 public class MineSweeper {
+	
 	private int _height;
 	private int _width;
-	
 	private int _bombAmount;
 	
 	private Cell [][] _cell;
@@ -15,15 +14,22 @@ public class MineSweeper {
 		setBombAmount(bombAmount);
 		setHeight(height);
 		setWidth(width);
+		initMines();
+	}
+	
+	private void initMines(){
 		_cell = new Cell[getWidth()][getHeight()];
 		for(int i = 0; i < getWidth() ; i ++){
 			for(int j = 0; j < getHeight(); j++){
-				_cell[i][j] = new Cell(i*MainFrame.CELL_LENGTH, j*MainFrame.CELL_LENGTH);
+				final int x = (int)(i * MainFrame.CELL_LENGTH + MainFrame.CELL_LENGTH/ 2);
+				final int y = (int)(j * MainFrame.CELL_LENGTH + MainFrame.CELL_LENGTH/ 2);
+				_cell[i][j] = new Cell(x, y);
+				//ƒNƒŠƒbƒN”»’è‚ª‚¸‚ê‚½‚©‚ç’¼‚µ‚Ä‚¨‚­
 			}
 		}
 		for(int i = 0; i < MainFrame.BOMM_AMOUNT; i ++){
-			final int I = (int) (Math.random() * MainFrame.CELL_AMOUNT);
-			final int J = (int) (Math.random() * MainFrame.CELL_AMOUNT);
+			final int I = (int) (Math.random() * MainFrame.CELL_AMOUNT_X);
+			final int J = (int) (Math.random() * MainFrame.CELL_AMOUNT_Y);
 			if(!_cell[I][J].isBomb()){
 				_cell[I][J].setBomb(true);
 			}else{
@@ -37,28 +43,47 @@ public class MineSweeper {
 		}
 	}
 	
+	private int  getSubscriptX(MouseEvent e){
+		return (int)((e.getX() - MainFrame.CELL_LENGTH / 2) / MainFrame.CELL_LENGTH );
+	}
+	
+	private int  getSubscriptY(MouseEvent e){
+		return (int)((e.getY() - MainFrame.CELL_LENGTH / 2) / MainFrame.CELL_LENGTH );
+	}
+	
 	public void clickedAction(MouseEvent e){
-		System.out.println(e.getX());
 		if(e.getButton() == MouseEvent.BUTTON1){
-			_cell[(int)(e.getX() / MainFrame.CELL_LENGTH)][(int)(e.getY() / MainFrame.CELL_LENGTH)].setDiscovered(true);
+			_cell[getSubscriptX(e)][getSubscriptY(e)].setDiscovered(true);
 		}else if(e.getButton() == MouseEvent.BUTTON3){
-			if(_cell[(int)(e.getX() / MainFrame.CELL_LENGTH)][(int)(e.getY() / MainFrame.CELL_LENGTH)].getFlag()){
-				_cell[(int)(e.getX() / MainFrame.CELL_LENGTH)][(int)(e.getY() / MainFrame.CELL_LENGTH)].setFlag(false);
+			if(_cell[getSubscriptX(e)][getSubscriptY(e)].getFlag()){
+				_cell[getSubscriptX(e)][getSubscriptY(e)].setFlag(false);
 			}else{
-				_cell[(int)(e.getX() / MainFrame.CELL_LENGTH)][(int)(e.getY() / MainFrame.CELL_LENGTH)].setFlag(true);
+				_cell[getSubscriptX(e)][getSubscriptY(e)].setFlag(true);
 			}
 		}
-		for(int i = 0; i < getWidth() ; i ++){
-			for(int j = 0; j < getHeight(); j++){
-				openAroundCell(i, j);
-			}
-		}
+		openAroundCell(getSubscriptX(e), getSubscriptY(e), true);
 		judge();
 	}
 	
-	private void openAroundCell(int i, int j){
-		if(( i < 0 || i > MainFrame.CELL_AMOUNT - 1) || (j  < 0 || j > MainFrame.CELL_AMOUNT - 1)){
-		}else{
+	private void openAroundCell(int i, int j, boolean flag){
+		System.out.println(i + "," + j);
+		if(flag){
+			openAroundCell(i - 1, j - 1, false);
+		}
+		if(isOutOfBoundX(i) || isOutOfBoundY(j)){
+			return;
+		}else if(_cell[i][j].isDiscovered() && _cell[i][j].getBombNumber() != 0){
+			return;
+		}else if(!_cell[i][j].isDiscovered() && _cell[i][j].getBombNumber() == 0){
+			_cell[i][j].setDiscovered(true);
+			openAroundCell(i - 1, j - 1, false);
+			openAroundCell(i - 1, j, false);
+			openAroundCell(i - 1, j + 1, false);
+			openAroundCell(i, j - 1, false);
+			openAroundCell(i, j + 1, false);
+			openAroundCell(i + 1, j - 1, false);
+			openAroundCell(i + 1, j , false);
+			openAroundCell(i + 1, j + 1, false);
 		}
 	}
 	
@@ -75,9 +100,13 @@ public class MineSweeper {
 				}
 			}
 		}
-		if(count == MainFrame.CELL_AMOUNT*MainFrame.CELL_AMOUNT - MainFrame.BOMM_AMOUNT){
+		if(count == getRightRemainder()){
 			goal();
 		}
+	}
+	
+	private int getRightRemainder(){
+		return MainFrame.CELL_AMOUNT_X*MainFrame.CELL_AMOUNT_Y - MainFrame.BOMM_AMOUNT;
 	}
 	
 	private void gameOver(){
@@ -96,8 +125,16 @@ public class MineSweeper {
 		return result;
 	}
 	
+	private boolean isOutOfBoundX(int i){
+		return  i < 0 || MainFrame.CELL_AMOUNT_X - 1 < i;
+	}
+	
+	private boolean isOutOfBoundY(int j){
+		return  j < 0 || MainFrame.CELL_AMOUNT_Y - 1 < j;
+	}
+	
 	private int getBombInt(int i, int j){
-		if(( i < 0 || i > MainFrame.CELL_AMOUNT - 1) || (j  < 0 || j > MainFrame.CELL_AMOUNT - 1)){
+		if(isOutOfBoundX(i) || isOutOfBoundY(j)){
 			return 0;
 		}else{
 			return _cell[i][j].getBombInt();

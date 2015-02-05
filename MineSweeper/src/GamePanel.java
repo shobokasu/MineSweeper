@@ -8,15 +8,14 @@ import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel implements MouseListener{
+	
 	private MainFrame _mainFrame;
 
 	public GamePanel(MainFrame mainFrame) {
 		super();
-		addMouseListener(this);
 		_mainFrame = mainFrame;
-		setSize(MainFrame.GAME_SIDE_LENGTH, MainFrame.GAME_SIDE_LENGTH);
-		setLayout(new GridLayout(_mainFrame.getGame().getWidth(), _mainFrame.getGame().getHeight()));
-		
+		addMouseListener(this);
+		setSize(MainFrame.GAME_SIDE_LENGTH_X, MainFrame.GAME_SIDE_LENGTH_Y);
 	}
 	
 	@Override
@@ -33,25 +32,17 @@ public class GamePanel extends JPanel implements MouseListener{
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 }

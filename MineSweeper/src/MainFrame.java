@@ -6,29 +6,35 @@ import javax.swing.JPanel;
 public class MainFrame extends JFrame{
 	
 	private MineSweeper _game;
-	private StatePanel _statePanel;
 	private JPanel _mainPanel;
+	private StatePanel _statePanel;
 	private GamePanel _gamePanel;
 	
 	public final static int CELL_LENGTH = 30;
-	public final static int CELL_AMOUNT = 10;
+	public final static int CELL_AMOUNT_X = 10;
+	public final static int CELL_AMOUNT_Y = 10;
 	public final static int BOMM_AMOUNT = 10;
-	public final static int GAME_SIDE_LENGTH = CELL_AMOUNT * CELL_LENGTH;
+	
+	public final static int GAME_SIDE_LENGTH_X = CELL_AMOUNT_X * CELL_LENGTH;
+	public final static int GAME_SIDE_LENGTH_Y = CELL_AMOUNT_Y * CELL_LENGTH;
+	
+	
 	public MainFrame() {
 		super();
-		setSize(GAME_SIDE_LENGTH + 50, GAME_SIDE_LENGTH + 200);
+		setSize(GAME_SIDE_LENGTH_X + 50, GAME_SIDE_LENGTH_Y + 200);
 		
 		_mainPanel = new JPanel();
 		_mainPanel.setLayout(new BorderLayout());
 		add(_mainPanel);
 		
-		_game = new MineSweeper(CELL_AMOUNT, CELL_AMOUNT, BOMM_AMOUNT);
+		_game = new MineSweeper(CELL_AMOUNT_X, CELL_AMOUNT_Y, BOMM_AMOUNT);
 
 		_statePanel = new StatePanel();
 		_gamePanel = new GamePanel(this);
 
 		_mainPanel.add(_statePanel, BorderLayout.NORTH);
 		_mainPanel.add(_gamePanel, BorderLayout.CENTER);
+		
 		setVisible(true);
 		
 	}

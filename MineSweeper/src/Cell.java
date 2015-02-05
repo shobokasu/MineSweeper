@@ -8,6 +8,8 @@ public class Cell {
 	private boolean _bomb;
 	private boolean _flag;
 	
+	private static final double RECTANGLE_RATE = 0.95;
+	
 	//ÉZÉãÇÃíÜêSç¿ïW
 	private int _x;
 	private int _y;
@@ -18,6 +20,7 @@ public class Cell {
 		_y = y;
 		_discovered = false;
 		_bomb = false;
+		_flag = false;
 	}
 	
 	public void paint(Graphics g){
@@ -26,9 +29,7 @@ public class Cell {
 		}else{
 			g.setColor(Color.BLUE);
 		}
-		g.fillRect(_x, _y
-				, (int)(MainFrame.CELL_LENGTH * 0.9)
-				, (int)(MainFrame.CELL_LENGTH * 0.9));
+		drawCell(g);
 		if(!isBomb()){
 			g.setColor(Color.WHITE);
 			g.drawString(_bombNumber + "", _x + 6, _y + 15);
@@ -39,10 +40,14 @@ public class Cell {
 			}else{
 				g.setColor(Color.BLACK);
 			}
-			g.fillRect(_x, _y
-					, (int)(MainFrame.CELL_LENGTH * 0.9)
-					, (int)(MainFrame.CELL_LENGTH * 0.9));
+			drawCell(g);
 		}
+	}
+	
+	private void drawCell(Graphics g){
+		g.fillRect(_x, _y
+				, (int)(MainFrame.CELL_LENGTH * RECTANGLE_RATE)
+				, (int)(MainFrame.CELL_LENGTH * RECTANGLE_RATE));
 	}
 	
 	public int getBombInt(){
@@ -67,6 +72,10 @@ public class Cell {
 	
 	public void setBombNumber(int bombNumber){
 		_bombNumber = bombNumber;
+	}
+	
+	public int getBombNumber(){
+		return _bombNumber;
 	}
 	
 	public void setFlag(boolean flag){
