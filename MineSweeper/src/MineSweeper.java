@@ -24,7 +24,6 @@ public class MineSweeper {
 				final int x = (int)(i * MainFrame.CELL_LENGTH + MainFrame.CELL_LENGTH/ 2);
 				final int y = (int)(j * MainFrame.CELL_LENGTH + MainFrame.CELL_LENGTH/ 2);
 				_cell[i][j] = new Cell(x, y);
-				//ƒNƒŠƒbƒN”»’è‚ª‚¸‚ê‚½‚©‚ç’¼‚µ‚Ä‚¨‚­
 			}
 		}
 		for(int i = 0; i < MainFrame.BOMM_AMOUNT; i ++){
@@ -32,6 +31,7 @@ public class MineSweeper {
 			final int J = (int) (Math.random() * MainFrame.CELL_AMOUNT_Y);
 			if(!_cell[I][J].isBomb()){
 				_cell[I][J].setBomb(true);
+				_cell[I][J].setBombNumber(-99999);
 			}else{
 				i --;
 			}
@@ -52,39 +52,53 @@ public class MineSweeper {
 	}
 	
 	public void clickedAction(MouseEvent e){
+		final int x = getSubscriptX(e);
+		final int y = getSubscriptY(e);
+		if(isOutOfBoundX(x) || isOutOfBoundY(y)){
+			return;
+		}
 		if(e.getButton() == MouseEvent.BUTTON1){
-			_cell[getSubscriptX(e)][getSubscriptY(e)].setDiscovered(true);
+			_cell[x][y].setDiscovered(true);
+			openAroundCell(x, y);
 		}else if(e.getButton() == MouseEvent.BUTTON3){
-			if(_cell[getSubscriptX(e)][getSubscriptY(e)].getFlag()){
-				_cell[getSubscriptX(e)][getSubscriptY(e)].setFlag(false);
+			if(_cell[x][y].getFlag()){
+				_cell[x][y].setFlag(false);
 			}else{
-				_cell[getSubscriptX(e)][getSubscriptY(e)].setFlag(true);
+				_cell[x][y].setFlag(true);
 			}
 		}
-		openAroundCell(getSubscriptX(e), getSubscriptY(e), true);
 		judge();
 	}
 	
-	private void openAroundCell(int i, int j, boolean flag){
+	private void openAroundCellRecursive(int i, int j){
+	}
+	
+	private void openAroundCell(int i, int j){
 		System.out.println(i + "," + j);
-		if(flag){
-			openAroundCell(i - 1, j - 1, false);
-		}
-		if(isOutOfBoundX(i) || isOutOfBoundY(j)){
+		if(_cell[i][j].getBombNumber() != 0){
 			return;
-		}else if(_cell[i][j].isDiscovered() && _cell[i][j].getBombNumber() != 0){
-			return;
-		}else if(!_cell[i][j].isDiscovered() && _cell[i][j].getBombNumber() == 0){
-			_cell[i][j].setDiscovered(true);
-			openAroundCell(i - 1, j - 1, false);
-			openAroundCell(i - 1, j, false);
-			openAroundCell(i - 1, j + 1, false);
-			openAroundCell(i, j - 1, false);
-			openAroundCell(i, j + 1, false);
-			openAroundCell(i + 1, j - 1, false);
-			openAroundCell(i + 1, j , false);
-			openAroundCell(i + 1, j + 1, false);
 		}
+		if(_cell[i][j].isBomb()){
+			return;
+		}
+		if(isOutOfBound(i, j)){
+			return;
+		}
+		openCell(i - 1, j - 1);
+		openCell(i - 1, j);
+		openCell(i - 1, j + 1);
+		openCell(i, j - 1);
+		openCell(i, j + 1);
+		openCell(i + 1, j - 1);
+		openCell(i + 1, j);
+		openCell(i + 1, j + 1);
+	}
+	
+	private void openCell(int i, int j){
+		if(isOutOfBound(i, j)){
+			return;
+		}
+		_cell[i][j].setDiscovered(true);
 	}
 	
 	private void judge(){
@@ -110,11 +124,11 @@ public class MineSweeper {
 	}
 	
 	private void gameOver(){
-		System.out.print("GAMEOVER");
+		System.out.println("GAMEOVER");
 	}
 	
 	private void goal(){
-		System.out.print("GOAL");
+		System.out.println("GOAL");
 	}
 	
 	private int countAroundBomb(int i, int j){
@@ -131,6 +145,10 @@ public class MineSweeper {
 	
 	private boolean isOutOfBoundY(int j){
 		return  j < 0 || MainFrame.CELL_AMOUNT_Y - 1 < j;
+	}
+	
+	private boolean isOutOfBound(int i, int j){
+		return  isOutOfBoundX(i) || isOutOfBoundY(j);
 	}
 	
 	private int getBombInt(int i, int j){
