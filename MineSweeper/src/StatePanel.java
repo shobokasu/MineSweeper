@@ -1,21 +1,23 @@
 import java.awt.Graphics;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 
 @SuppressWarnings("serial")
 public class StatePanel extends JPanel {
 
-	@Override
-	public void paintComponent(Graphics g){
-		super.paintComponent(g);
-		g.drawLine(0, 0, 20, 20);
-	}
+	JLabel _label = new JLabel("MineSweeper");
 	
 	public StatePanel() {
 		super();
 		setSize(MainFrame.GAME_SIDE_LENGTH_X, 10);
-		add(new JButton("a"));
+		add(_label);
+	}
+	
+	public void setText(String str){
+		_label.setText(str);
 	}
 }

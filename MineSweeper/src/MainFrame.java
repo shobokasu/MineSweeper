@@ -27,7 +27,7 @@ public class MainFrame extends JFrame{
 		_mainPanel.setLayout(new BorderLayout());
 		add(_mainPanel);
 		
-		_game = new MineSweeper(CELL_AMOUNT_X, CELL_AMOUNT_Y, BOMM_AMOUNT);
+		_game = new MineSweeper(this, CELL_AMOUNT_X, CELL_AMOUNT_Y, BOMM_AMOUNT);
 
 		_statePanel = new StatePanel();
 		_gamePanel = new GamePanel(this);
@@ -44,6 +44,10 @@ public class MainFrame extends JFrame{
 	
 	public MineSweeper getGame(){
 		return _game;
+	}
+	
+	public StatePanel getStatePanel(){
+		return _statePanel;
 	}
 
 }

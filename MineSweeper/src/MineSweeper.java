@@ -7,13 +7,15 @@ public class MineSweeper {
 	private int _height;
 	private int _width;
 	private int _bombAmount;
+	private MainFrame _mainFrame;
 	
 	private Cell [][] _cell;
 	
-	public MineSweeper(int width, int height, int bombAmount) {
+	public MineSweeper(MainFrame mainFrame, int width, int height, int bombAmount) {
 		setBombAmount(bombAmount);
 		setHeight(height);
 		setWidth(width);
+		_mainFrame = mainFrame;
 		initMines();
 	}
 	
@@ -59,7 +61,7 @@ public class MineSweeper {
 		}
 		if(e.getButton() == MouseEvent.BUTTON1){
 			_cell[x][y].setDiscovered(true);
-			openAroundCell(x, y);
+			openDiscoveredZeroCell();
 		}else if(e.getButton() == MouseEvent.BUTTON3){
 			if(_cell[x][y].getFlag()){
 				_cell[x][y].setFlag(false);
@@ -70,18 +72,30 @@ public class MineSweeper {
 		judge();
 	}
 	
-	private void openAroundCellRecursive(int i, int j){
+	
+	private void openDiscoveredZeroCell(){
+		int count = 0;
+		while(count < Math.max(MainFrame.CELL_AMOUNT_X, MainFrame.CELL_AMOUNT_Y)){
+			for(int i = 0; i < getWidth() ; i ++){
+				for(int j = 0; j < getHeight(); j++){
+					if(_cell[i][j].isDiscovered() && _cell[i][j].getBombNumber() == 0){
+						openAroundCell(i, j);
+					}
+				}
+			}
+			count ++;
+		}
 	}
 	
 	private void openAroundCell(int i, int j){
 		System.out.println(i + "," + j);
+		if(isOutOfBound(i, j)){
+			return;
+		}
 		if(_cell[i][j].getBombNumber() != 0){
 			return;
 		}
 		if(_cell[i][j].isBomb()){
-			return;
-		}
-		if(isOutOfBound(i, j)){
 			return;
 		}
 		openCell(i - 1, j - 1);
@@ -99,6 +113,10 @@ public class MineSweeper {
 			return;
 		}
 		_cell[i][j].setDiscovered(true);
+	}
+	
+	private void setStatePanelText(String str){
+		_mainFrame.getStatePanel().setText(str);
 	}
 	
 	private void judge(){
@@ -124,11 +142,11 @@ public class MineSweeper {
 	}
 	
 	private void gameOver(){
-		System.out.println("GAMEOVER");
+		setStatePanelText("GAME OVER");
 	}
 	
 	private void goal(){
-		System.out.println("GOAL");
+		setStatePanelText("GOAL");
 	}
 	
 	private int countAroundBomb(int i, int j){
