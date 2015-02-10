@@ -1,6 +1,8 @@
 import java.awt.Color;
 import java.awt.Graphics;
 
+import org.omg.CosNaming.IstringHelper;
+
 
 public class Cell {
 
@@ -54,6 +56,10 @@ public class Cell {
 		return isBomb() ? 1 : 0;
 	}
 	
+	public int getValidFlagInt(){
+		return (isFlag()) ? 1 : 0;
+	}
+	
 	public void setDiscovered(boolean discovered){
 		_discovered = discovered;
 	}
@@ -82,7 +88,7 @@ public class Cell {
 		_flag = flag;
 	}
 	
-	public boolean getFlag(){
+	public boolean isFlag(){
 		return _flag;
 	}
 	

@@ -21,7 +21,7 @@ public class MainFrame extends JFrame{
 	
 	public MainFrame() {
 		super();
-		setSize(GAME_SIDE_LENGTH_X + 50, GAME_SIDE_LENGTH_Y + 200);
+		setSize(GAME_SIDE_LENGTH_X + 50, GAME_SIDE_LENGTH_Y + 100);
 		
 		_mainPanel = new JPanel();
 		_mainPanel.setLayout(new BorderLayout());

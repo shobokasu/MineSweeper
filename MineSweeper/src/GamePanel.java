@@ -2,6 +2,7 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.Time;
 
 import javax.swing.JPanel;
 
@@ -10,6 +11,7 @@ import javax.swing.JPanel;
 public class GamePanel extends JPanel implements MouseListener{
 	
 	private MainFrame _mainFrame;
+
 
 	public GamePanel(MainFrame mainFrame) {
 		super();
@@ -38,6 +40,7 @@ public class GamePanel extends JPanel implements MouseListener{
 	public void mouseExited(MouseEvent e) {
 	}
 
+	static int i = 0;
 	@Override
 	public void mousePressed(MouseEvent e) {
 	}

@@ -8,6 +8,7 @@ public class MineSweeper {
 	private int _width;
 	private int _bombAmount;
 	private MainFrame _mainFrame;
+	private int _turn;
 	
 	private Cell [][] _cell;
 	
@@ -20,6 +21,7 @@ public class MineSweeper {
 	}
 	
 	private void initMines(){
+		_turn = 0;
 		_cell = new Cell[getWidth()][getHeight()];
 		for(int i = 0; i < getWidth() ; i ++){
 			for(int j = 0; j < getHeight(); j++){
@@ -60,10 +62,18 @@ public class MineSweeper {
 			return;
 		}
 		if(e.getButton() == MouseEvent.BUTTON1){
-			_cell[x][y].setDiscovered(true);
+			if(!_cell[x][y].isDiscovered()){
+				nextTurn();
+			}
+			openCell(x,y);
 			openDiscoveredZeroCell();
+		}else if(e.getButton() == MouseEvent.BUTTON2){
+			if(_cell[x][y].getBombNumber() == getAmountAroundFlag(x, y)){
+				System.out.println("aaa");
+				openAroundNonFlagCell(x, y);
+			}
 		}else if(e.getButton() == MouseEvent.BUTTON3){
-			if(_cell[x][y].getFlag()){
+			if(_cell[x][y].isFlag()){
 				_cell[x][y].setFlag(false);
 			}else{
 				_cell[x][y].setFlag(true);
@@ -72,6 +82,10 @@ public class MineSweeper {
 		judge();
 	}
 	
+	private void nextTurn(){
+		setTurn(getTurn() + 1);
+		_mainFrame.getStatePanel().setTextTurn(getTurn());
+	}
 	
 	private void openDiscoveredZeroCell(){
 		int count = 0;
@@ -79,7 +93,7 @@ public class MineSweeper {
 			for(int i = 0; i < getWidth() ; i ++){
 				for(int j = 0; j < getHeight(); j++){
 					if(_cell[i][j].isDiscovered() && _cell[i][j].getBombNumber() == 0){
-						openAroundCell(i, j);
+						openAroundZeroCell(i, j);
 					}
 				}
 			}
@@ -87,12 +101,18 @@ public class MineSweeper {
 		}
 	}
 	
-	private void openAroundCell(int i, int j){
-		System.out.println(i + "," + j);
+	private void openAroundZeroCell(int i, int j){
 		if(isOutOfBound(i, j)){
 			return;
 		}
 		if(_cell[i][j].getBombNumber() != 0){
+			return;
+		}
+		openAroundCell(i, j);
+	}
+	
+	private void openAroundCell(int i, int j){
+		if(isOutOfBound(i, j)){
 			return;
 		}
 		if(_cell[i][j].isBomb()){
@@ -108,11 +128,39 @@ public class MineSweeper {
 		openCell(i + 1, j + 1);
 	}
 	
+	private void openAroundNonFlagCell(int i, int j){
+		if(isOutOfBound(i, j)){
+			return;
+		}
+		if(_cell[i][j].isBomb()){
+			return;
+		}
+		openNonFlagCell(i - 1, j - 1);
+		openNonFlagCell(i - 1, j);
+		openNonFlagCell(i - 1, j + 1);
+		openNonFlagCell(i, j - 1);
+		openNonFlagCell(i, j + 1);
+		openNonFlagCell(i + 1, j - 1);
+		openNonFlagCell(i + 1, j);
+		openNonFlagCell(i + 1, j + 1);
+	}
+	
 	private void openCell(int i, int j){
 		if(isOutOfBound(i, j)){
 			return;
 		}
 		_cell[i][j].setDiscovered(true);
+		_cell[i][j].setFlag(false);
+	}
+	
+	private void openNonFlagCell(int i, int j){
+		if(isOutOfBound(i, j)){
+			return;
+		}
+		if(_cell[i][j].isFlag()){
+			return;
+		}
+		openCell(i, j);
 	}
 	
 	private void setStatePanelText(String str){
@@ -134,6 +182,31 @@ public class MineSweeper {
 		}
 		if(count == getRightRemainder()){
 			goal();
+			if(getTurn() == 1){
+				initMines();
+			}
+		}
+	}
+	
+	private int getAmountAroundFlag(int i, int j){
+		int result = 0;
+		result += getValidFlagInt(i - 1, j - 1);
+		result += getValidFlagInt(i - 1, j);
+		result += getValidFlagInt(i - 1, j + 1);
+		result += getValidFlagInt(i, j - 1);
+		result += getValidFlagInt(i, j + 1);
+		result += getValidFlagInt(i + 1, j - 1);
+		result += getValidFlagInt(i + 1, j);
+		result += getValidFlagInt(i + 1, j + 1);
+		System.out.println(result);
+		return result;
+	}
+	
+	private int getValidFlagInt(int i, int j){
+		if(isOutOfBoundX(i) || isOutOfBoundY(j)){
+			return 0;
+		}else{
+			return _cell[i][j].getValidFlagInt();
 		}
 	}
 	
@@ -204,6 +277,14 @@ public class MineSweeper {
 	}
 	public int getWidth(){
 		return _width;
+	}
+	
+	public int getTurn(){
+		return _turn;
+	}
+	
+	public void setTurn(int turn){
+		_turn = turn;
 	}
 	
 }
