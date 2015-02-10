@@ -135,6 +135,9 @@ public class MineSweeper {
 		if(_cell[i][j].isBomb()){
 			return;
 		}
+		if(!_cell[i][j].isDiscovered()){
+			return;
+		}
 		openNonFlagCell(i - 1, j - 1);
 		openNonFlagCell(i - 1, j);
 		openNonFlagCell(i - 1, j + 1);

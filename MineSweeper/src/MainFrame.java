@@ -10,10 +10,10 @@ public class MainFrame extends JFrame{
 	private StatePanel _statePanel;
 	private GamePanel _gamePanel;
 	
-	public final static int CELL_LENGTH = 30;
-	public final static int CELL_AMOUNT_X = 10;
-	public final static int CELL_AMOUNT_Y = 10;
-	public final static int BOMM_AMOUNT = 10;
+	public final static int CELL_LENGTH = 20;
+	public final static int CELL_AMOUNT_X = 30;
+	public final static int CELL_AMOUNT_Y = 20;
+	public final static int BOMM_AMOUNT = 50;
 	
 	public final static int GAME_SIDE_LENGTH_X = CELL_AMOUNT_X * CELL_LENGTH;
 	public final static int GAME_SIDE_LENGTH_Y = CELL_AMOUNT_Y * CELL_LENGTH;
